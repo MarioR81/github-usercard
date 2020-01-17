@@ -2,6 +2,19 @@
            (replacing the palceholder with your Github name):
            https://api.github.com/users/<your name>
 */
+const entryPoint = document.querySelector('.cards')
+
+
+// axios.get('http://api.github.com/users/marior81')
+// .then(response => {
+//   // console.log(response)
+//   entryPoint.append(createCards(response.data)
+// )}
+// )
+// .catch(err => {
+//   console.log('error', err);
+// });
+
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
@@ -15,7 +28,7 @@
 */
 
 /* Step 5: Now that you have your own card getting added to the DOM, either 
-          follow this link in your browser https://api.github.com/users/<Your github name>/followers 
+          follow this link in your browser https://api.github.com/users/marior81/followers 
           , manually find some other users' github handles, or use the list found 
           at the bottom of the page. Get at least 5 different Github usernames and add them as
           Individual strings to the friendsArray below.
@@ -24,7 +37,70 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+
+
+
+
+const followersArray = [
+  'BrandyBecker',
+  'cristinaedens',
+  'Evrgreen',
+  'ErikRodriguez-webdev',
+  'tdefriess' ];
+
+users = followersArray.map(user => 'https://api.github.com/users/'.concat(user))
+users.forEach(user => {
+  axios.get(user)
+  .then(response => {
+    entryPoint.append(createCards(response.data))
+  })
+  .catch(err => {
+    console.log('ERROR', err);
+  })
+});
+
+
+
+
+
+function createCards(object){
+  const cardMain = document.createElement('div');
+  const cardImg = document.createElement('img');
+  const cardInfo = document.createElement('div');
+  const cardName = document.createElement('h3');
+  const userName = document.createElement('p');
+  const userLoc = document.createElement('p');
+  const userProfile = document.createElement('p')
+  const userUrl = document.createElement('a');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const bioInfo = document.createElement('p')
+  cardMain.classList.add('card');
+  cardInfo.classList.add('card-info');
+  cardName.classList.add('name');
+  userName.classList.add('username');
+  cardMain.append(cardImg);
+  cardMain.append(cardInfo);
+  cardInfo.append(cardName);
+  cardInfo.append(userName);
+  cardInfo.append(userLoc);
+  cardInfo.append(userProfile);
+  userProfile.append(userUrl);
+  cardInfo.append(followers);
+  cardInfo.append(following);
+  cardInfo.append(bioInfo);
+
+  cardImg.src = object.avatar_url;
+  cardName.textContent = object.name;
+  userName.textContent = object.login;
+  userLoc.textContent = `Location: ${object.location}`;
+  userProfile.textContent = `Profile: ${object.url}`;
+  followers.textContent = `Followers: ${object.followers}`;
+  following.textContent = `Following: ${object.following}`;
+  bioInfo.textContent = `Bio: ${object.bio}`
+    
+  return cardMain;
+};
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
